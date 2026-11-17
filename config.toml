@@ -1,0 +1,89 @@
+[paths]
+raw_dir = "data/raw"
+work_dir = "data/work"
+results_dir = "results"
+demo_dir = "demo"
+space_dir = "build/space"
+
+[download]
+api_url = "https://api.fdic.gov/banks"
+fed_url = "https://www.federalreserve.gov/supervisionreg/files"
+first_quarter = "1984-03-31"
+last_quarter = "2026-06-30"
+scenario_year = 2026
+page_size = 10000
+workers = 4
+attempts = 5
+backoff_seconds = 3.0
+timeout_seconds = 180.0
+
+[labels]
+horizon_quarters = 4
+event_types = ["FAILURE"]
+ambiguous_types = ["ASSISTANCE"]
+
+[panel]
+first_origin = "1985-03-31"
+min_assets = 0
+
+[features]
+winsor_lower = 0.005
+winsor_upper = 0.995
+
+[logit]
+c = 1.0
+max_iter = 2000
+
+[gbm]
+learning_rate = 0.05
+max_iter = 1000
+min_iter = 50
+fallback_iter = 150
+patience = 50
+validation_quarters = 12
+min_validation_failures = 100
+max_leaf_nodes = 15
+min_samples_leaf = 200
+l2_regularization = 1.0
+negative_sample_rate = 1.0
+seed = 7
+threads = 4
+
+[evaluation]
+top_fractions = [0.01, 0.02, 0.05, 0.10]
+flag_fraction = 0.05
+warning_lookback = 12
+bootstrap_reps = 200
+rolling_first_year = 1990
+rolling_last_year = 2025
+rolling_sample_rate = 0.25
+seed = 11
+
+[[evaluation.designs]]
+name = "crisis"
+train_last_origin = "2005-12-31"
+test_first_origin = "2006-12-31"
+test_last_origin = "2011-12-31"
+
+[[evaluation.designs]]
+name = "recent"
+train_last_origin = "2013-12-31"
+test_first_origin = "2014-12-31"
+test_last_origin = "2025-06-30"
+
+[case2023]
+score_origins = ["2022-09-30", "2022-12-31"]
+certs = [24735, 57053, 59017]
+
+[stress]
+horizon_quarters = 8
+backtest_train_last_origin = "2004-12-31"
+backtest_first_origin = "2006-12-31"
+backtest_last_origin = "2010-12-31"
+reference_origin = "2008-09-30"
+simulations = 20000
+seed = 5
+
+[demo]
+space_id = "adwitiyashukla/fdic-bank-failure-forecast"
+repo_url = "https://github.com/adwitiyashukla/fdic-bank-failure-forecast"
