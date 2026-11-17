@@ -36,7 +36,6 @@ def test_shipped_config_loads(config_path):
         ("rolling_sample_rate = 0.25", "rolling_sample_rate = 1.5", "at most 1"),
         ("negative_sample_rate = 1.0", "negative_sample_rate = 0", "above 0"),
         ("threads = 4", "threads = 0", "gbm.threads must be between"),
-        ('space_id = "adwitiyashukla/fdic-bank-failure-forecast"', 'space_id = "demo"', "owner"),
         ("certs = [24735, 57053, 59017]", "certs = [24735, true]", "positive integers"),
         ("simulations = 20000", "simulations = 5", "between"),
     ],

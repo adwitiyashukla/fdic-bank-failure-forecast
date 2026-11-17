@@ -3,7 +3,6 @@ raw_dir = "data/raw"
 work_dir = "data/work"
 results_dir = "results"
 demo_dir = "demo"
-space_dir = "build/space"
 
 [download]
 api_url = "https://api.fdic.gov/banks"
@@ -83,7 +82,3 @@ backtest_last_origin = "2010-12-31"
 reference_origin = "2008-09-30"
 simulations = 20000
 seed = 5
-
-[demo]
-space_id = "adwitiyashukla/fdic-bank-failure-forecast"
-repo_url = "https://github.com/adwitiyashukla/fdic-bank-failure-forecast"

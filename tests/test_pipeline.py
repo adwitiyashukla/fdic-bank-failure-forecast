@@ -1,3 +1,4 @@
+import shutil
 from dataclasses import replace
 from pathlib import Path
 
@@ -7,7 +8,6 @@ import pytest
 from bankfail.config import load_config
 from bankfail.export import NAMED, PUBLIC
 from bankfail.pipeline import run_all
-from bankfail.space import build_space
 from bankfail.synth import write_synthetic
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +27,6 @@ def built(tmp_path_factory):
         work_dir=root / "work",
         results_dir=root / "results",
         demo_dir=root / "demo",
-        space_dir=root / "space",
     )
     gbm = replace(
         base.gbm,
@@ -50,7 +49,7 @@ def built(tmp_path_factory):
     )
     write_synthetic(config, 400, log=quiet)
     run_all(config, log=quiet)
-    build_space(config, log=quiet)
+    shutil.copy(ROOT / "app.py", config.paths.demo_dir.parent / "app.py")
     return config
 
 
@@ -81,19 +80,10 @@ def test_rolling_covers_the_configured_years(built):
     assert set(rolling["year"]) == set(range(2005, 2011))
 
 
-def test_space_bundle_has_what_the_space_needs(built):
-    space = built.paths.space_dir
-    for name in ("app.py", "Dockerfile", "requirements.txt", "README.md"):
-        assert (space / name).is_file()
-    readme = (space / "README.md").read_text(encoding="utf-8")
-    assert readme.startswith("---\n") and "sdk: docker" in readme and "app_port: 8501" in readme
-    assert (space / "demo" / "panel_summary.json").is_file()
-
-
 def test_app_renders_every_tab(built):
     from streamlit.testing.v1 import AppTest
 
-    app = AppTest.from_file(str(built.paths.space_dir / "app.py"), default_timeout=120)
+    app = AppTest.from_file(str(built.paths.demo_dir.parent / "app.py"), default_timeout=120)
     app.run()
     assert not app.exception
     assert len(app.tabs) == 6

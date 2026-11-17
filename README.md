@@ -2,8 +2,6 @@
 
 Which US banks will fail in the next 12 months? This project scores every FDIC insured bank at every quarter end from 1985 to June 2026, using only what that quarter's call report showed. Then it checks the scores against the banks the FDIC actually closed, in the 2008 crisis, in the quiet years after it, and in 2023.
 
-Live demo: https://huggingface.co/spaces/adwitiyashukla/fdic-bank-failure-forecast
-
 ## Data
 
 Both sources are public and need no account or key.
@@ -116,7 +114,7 @@ python -m venv .venv
 
 The download pulls about 360 MB of quarter files from the FDIC API in about 17 minutes and skips quarters it already has. The all command runs panel, evaluate, rolling, case, current, stress and export in that order, and each step can also run on its own, like `python -m bankfail rolling`. The full run takes about an hour on my laptop, a 12 thread Intel Core 5 120U with 8 GB of RAM. Every date, horizon and model setting is in config.toml and gets checked when it loads.
 
-`python -m bankfail synth` writes a synthetic dataset in the same format as the download. CI uses it to run the whole pipeline without calling the FDIC. `python -m bankfail space` packs the demo tables and app.py for the Hugging Face Space.
+`python -m bankfail synth` writes a synthetic dataset in the same format as the download. CI uses it to run the whole pipeline without calling the FDIC.
 
 On Linux or Mac, use `.venv/bin/` instead of `.venv\Scripts\`.
 
@@ -126,7 +124,7 @@ scikit-learn is held below 1.9. Version 1.9 changed how the boosting model bins 
 
 ## Tests
 
-73 pytest tests. They check the labels around failure dates, that no feature can see the future, the monotone constraints, features that have no data yet in older training windows, the time based validation split, paging and retries against a fake FDIC API, and config validation. One test runs the whole pipeline on synthetic data and then renders every tab of the Streamlit app.
+71 pytest tests. They check the labels around failure dates, that no feature can see the future, the monotone constraints, features that have no data yet in older training windows, the time based validation split, paging and retries against a fake FDIC API, and config validation. One test runs the whole pipeline on synthetic data and then renders every tab of the Streamlit app.
 
 ## Layout
 
@@ -140,7 +138,6 @@ bankfail/evaluate.py   crisis, recent and rolling tests
 bankfail/cases.py      the 2023 check, the run screen and the latest quarter
 bankfail/stress.py     the eight quarter stress model and the Fed scenarios
 bankfail/export.py     demo tables and the check that no open bank is named
-bankfail/space.py      Hugging Face Space bundle
 bankfail/synth.py      synthetic data for tests and CI
 bankfail/pipeline.py   runs the steps and writes results
 app.py                 the Streamlit demo

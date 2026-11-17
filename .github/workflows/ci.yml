@@ -42,4 +42,3 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m bankfail synth --banks 1500
       - run: python -m bankfail all
-      - run: python -m bankfail space

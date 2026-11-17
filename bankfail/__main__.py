@@ -9,7 +9,7 @@ COMMANDS = ("download", "panel", "evaluate", "rolling", "case", "current", "stre
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="bankfail")
-    parser.add_argument("command", choices=COMMANDS + ("all", "space", "synth"))
+    parser.add_argument("command", choices=COMMANDS + ("all", "synth"))
     parser.add_argument("--config", default="config.toml")
     parser.add_argument("--banks", type=int, default=1500)
     args = parser.parse_args(argv)
@@ -26,10 +26,6 @@ def main(argv: list[str] | None = None) -> int:
         from bankfail.synth import write_synthetic
 
         write_synthetic(config, args.banks)
-    elif args.command == "space":
-        from bankfail.space import build_space
-
-        build_space(config)
     elif args.command == "all":
         from bankfail.pipeline import run_all
 

@@ -14,7 +14,6 @@ class Paths:
     work_dir: Path
     results_dir: Path
     demo_dir: Path
-    space_dir: Path
 
 
 @dataclass(frozen=True)
@@ -112,12 +111,6 @@ class Stress:
 
 
 @dataclass(frozen=True)
-class Demo:
-    space_id: str
-    repo_url: str
-
-
-@dataclass(frozen=True)
 class Config:
     paths: Paths
     download: Download
@@ -129,7 +122,6 @@ class Config:
     evaluation: Evaluation
     case2023: Case2023
     stress: Stress
-    demo: Demo
 
 
 def _section(raw: dict, name: str) -> dict:
@@ -200,7 +192,7 @@ def _paths(raw: dict) -> Paths:
     return Paths(
         **{
             key: Path(_text(section, key, "paths"))
-            for key in ("raw_dir", "work_dir", "results_dir", "demo_dir", "space_dir")
+            for key in ("raw_dir", "work_dir", "results_dir", "demo_dir")
         }
     )
 
@@ -391,14 +383,6 @@ def _stress(raw: dict, last: date) -> Stress:
     return value
 
 
-def _demo(raw: dict) -> Demo:
-    s = _section(raw, "demo")
-    space_id = _text(s, "space_id", "demo")
-    if space_id.count("/") != 1:
-        raise ValueError("demo.space_id must look like owner/name")
-    return Demo(space_id=space_id, repo_url=_url(s, "repo_url", "demo"))
-
-
 def load_config(path: str | Path = "config.toml") -> Config:
     path = Path(path)
     if not path.is_file():
@@ -422,5 +406,4 @@ def load_config(path: str | Path = "config.toml") -> Config:
         evaluation=_evaluation(raw, labels.horizon_quarters, download, panel),
         case2023=_case2023(raw, panel, labels.horizon_quarters),
         stress=_stress(raw, download.last_quarter),
-        demo=_demo(raw),
     )
